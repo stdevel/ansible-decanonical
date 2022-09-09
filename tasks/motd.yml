@@ -1,0 +1,27 @@
+---
+- name: Remove MOTD advertisements
+  block:
+    - name: Disable motd-time
+      lineinfile:
+        path: /etc/default/motd-news
+        regexp: '^ENABLED='
+        line: ENABLED=0
+      failed_when: false
+
+    - name: Disable service and timer
+      systemd:
+        name: "{{ item }}"
+        state: stopped
+        enabled: false
+        masked: true
+        daemon_reload: true
+      loop:
+        - motd-news.service
+        - motd-news.timer
+
+    - name: Remove motd packages
+      apt:
+        name:
+          - motd-news-config
+        state: absent
+  become: true

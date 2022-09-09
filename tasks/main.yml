@@ -1,0 +1,15 @@
+---
+- name: Include MOTD tasks
+  include_tasks: motd.yml
+  when: decanonical_purge_motd
+
+- name: Include Snap tasks
+  include_tasks: snap.yml
+  when: decanonical_purge_snap
+
+- name: Remove unneeded packages
+  apt:
+    name: decanonical_unneeded_pkgs
+    state: absent
+  become: true
+  when: decanonical_purge_unneeded_pkgs

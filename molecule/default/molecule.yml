@@ -1,0 +1,16 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: vagrant
+platforms:
+  - name: ubuntu2004
+    box: generic/ubuntu2004
+provisioner:
+  name: ansible
+verifier:
+  name: testinfra
+lint: |
+  yamllint .
+  ansible-lint
+  flake8

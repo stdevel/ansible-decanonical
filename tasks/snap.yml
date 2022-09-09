@@ -1,0 +1,59 @@
+---
+- name: Find installed snaps
+  shell: "set -o pipefail ; snap list | cut -d' ' -f 1 | tail -n+2"
+  changed_when: false
+  register: ohsnap
+
+- name: Remove non-core snaps
+  snap:
+    name: "{{ ohsnap.stdout.split('\n') | reject('search','snapd') | reject('search','core') | list }}"
+    state: absent
+  register: snapout
+  failed_when:
+    - snapout.failed
+    - "'Failed to find required executable snap' not in snapout.msg"
+  become: true
+
+- name: Find remaining installed snaps
+  shell: "set -o pipefail ; snap list | cut -d' ' -f 1 | tail -n+2"
+  changed_when: false
+  register: ohsnap
+
+- name: Remove core snaps
+  snap:
+    name: "{{ item }}"
+    state: absent
+  register: snapout
+  loop: "{{ ohsnap.stdout.split('\n') }}"
+  failed_when:
+    - snapout.failed
+    - "'Failed to find required executable snap' not in snapout.msg"
+  become: true
+
+- name: Remove Snapcraft stack
+  apt:
+    name:
+      - snap
+      - snapd
+    purge: true
+    autoremove: true
+    state: absent
+  become: true
+
+- name: Remove snap directories
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /snap
+    - /var/snap
+    - /var/lib/snapd
+
+- name: Add preference to not install snapd
+  copy:
+    src: files/snapd.preferences
+    dest: /etc/apt/preferences.d/no-snap.pref
+    owner: root
+    group: root
+    mode: 0644
+  become: true
