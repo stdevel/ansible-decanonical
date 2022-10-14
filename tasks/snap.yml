@@ -11,7 +11,8 @@
   register: snapout
   failed_when:
     - snapout.failed
-    - "'Failed to find required executable snap' not in snapout.msg"
+    - "'Failed to find required executable' not in snapout.msg"
+  when: ohsnap.msg != ""
   become: true
 
 - name: Find remaining installed snaps
@@ -23,11 +24,12 @@
   snap:
     name: "{{ item }}"
     state: absent
-  register: snapout
+  register: snapout 
   loop: "{{ ohsnap.stdout.split('\n') }}"
   failed_when:
     - snapout.failed
-    - "'Failed to find required executable snap' not in snapout.msg"
+    - "'Failed to find required executable' not in snapout.msg"
+  when: ohsnap.msg != ""
   become: true
 
 - name: Remove Snapcraft stack
