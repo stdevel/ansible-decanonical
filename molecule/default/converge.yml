@@ -3,7 +3,7 @@
   hosts: all
   tasks:
     - name: Include decanonical
-      include_role:
+      ansible.builtin.include_role:
         name: ansible-decanonical
       vars:
         decanonical_purge_unneeded_pkgs: true

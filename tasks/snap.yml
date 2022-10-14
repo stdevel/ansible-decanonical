@@ -1,11 +1,11 @@
 ---
 - name: Find installed snaps
-  shell: "snap list | cut -d' ' -f 1 | tail -n+2"
+  ansible.builtin.shell: "snap list | cut -d' ' -f 1 | tail -n+2"
   changed_when: false
   register: ohsnap
 
 - name: Remove non-core snaps
-  snap:
+  community.general.snap:
     name: "{{ ohsnap.stdout.split('\n') | reject('search','snapd') | reject('search','core') | list }}"
     state: absent
   register: snapout
@@ -16,12 +16,12 @@
   become: true
 
 - name: Find remaining installed snaps
-  shell: "snap list | cut -d' ' -f 1 | tail -n+2"
+  ansible.builtin.shell: "snap list | cut -d' ' -f 1 | tail -n+2"
   changed_when: false
   register: ohsnap
 
 - name: Remove core snaps
-  snap:
+  community.general.snap:
     name: "{{ item }}"
     state: absent
   register: snapout 
@@ -33,7 +33,7 @@
   become: true
 
 - name: Remove Snapcraft stack
-  apt:
+  ansible.builtin.apt:
     name:
       - snap
       - snapd
@@ -43,7 +43,7 @@
   become: true
 
 - name: Remove snap directories
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     state: absent
   loop:
@@ -52,7 +52,7 @@
     - /var/lib/snapd
 
 - name: Add preference to not install snapd
-  copy:
+  ansible.builtin.copy:
     src: files/snapd.preferences
     dest: /etc/apt/preferences.d/no-snap.pref
     owner: root

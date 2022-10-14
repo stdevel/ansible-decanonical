@@ -2,14 +2,14 @@
 - name: Remove MOTD advertisements
   block:
     - name: Disable motd-time
-      lineinfile:
+      ansible.builtin.lineinfile:
         path: /etc/default/motd-news
         regexp: '^ENABLED='
         line: ENABLED=0
       failed_when: false
 
     - name: Disable service and timer
-      systemd:
+      ansible.builtin.systemd:
         name: "{{ item }}"
         state: stopped
         enabled: false
@@ -20,7 +20,7 @@
         - motd-news.timer
 
     - name: Remove motd packages
-      apt:
+      ansible.builtin.apt:
         name:
           - motd-news-config
         state: absent
