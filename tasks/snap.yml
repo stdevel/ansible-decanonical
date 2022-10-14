@@ -1,6 +1,6 @@
 ---
 - name: Find installed snaps
-  shell: "set -o pipefail ; snap list | cut -d' ' -f 1 | tail -n+2"
+  shell: "snap list | cut -d' ' -f 1 | tail -n+2"
   changed_when: false
   register: ohsnap
 
@@ -15,7 +15,7 @@
   become: true
 
 - name: Find remaining installed snaps
-  shell: "set -o pipefail ; snap list | cut -d' ' -f 1 | tail -n+2"
+  shell: "snap list | cut -d' ' -f 1 | tail -n+2"
   changed_when: false
   register: ohsnap
 
