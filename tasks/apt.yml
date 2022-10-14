@@ -1,0 +1,11 @@
+---
+- name: Remove advertisement templates
+  ansible.builtin.file:
+    name: "{{ item }}"
+    state: absent
+  loop:
+    - /var/lib/ubuntu-advantage/messages/apt-pre-invoke-no-packages-apps.tmpl
+    - /var/lib/ubuntu-advantage/messages/apt-pre-invoke-packages-apps.tmpl
+    - /etc/apt/apt.conf.d/20apt-esm-hook.conf
+  become: true
+  failed_when: false

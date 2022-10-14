@@ -3,6 +3,10 @@
   ansible.builtin.include_tasks: motd.yml
   when: decanonical_purge_motd
 
+- name: Include APT tasks
+  ansible.builtin.include_tasks: apt.yml
+  when: decanonical_purge_apt_ads
+
 - name: Include Snap tasks
   ansible.builtin.include_tasks: snap.yml
   when: decanonical_purge_snap

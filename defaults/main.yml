@@ -1,5 +1,6 @@
 ---
 decanonical_purge_motd: true
+decanonical_purge_apt_ads: true
 decanonical_purge_snap: true
 decanonical_purge_unneeded_pkgs: false
 decanonical_unneeded_pkgs:

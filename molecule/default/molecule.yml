@@ -6,6 +6,8 @@ driver:
 platforms:
   - name: ubuntu2004
     box: generic/ubuntu2004
+  - name: ubuntu2204
+    box: generic/ubuntu2204
 provisioner:
   name: ansible
 verifier:

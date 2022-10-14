@@ -46,3 +46,22 @@ def test_snap(host):
     assert _pref.exists
     assert _pref.contains("Package: snapd")
     assert _pref.contains("Pin-Priority: -1")
+
+
+def test_apt(host):
+    """
+    Ensure that APT advertisement is removed
+    """
+    # ensure templates and hooks are removed
+    files = [
+        '/var/lib/ubuntu-advantage/messages/apt-pre-invoke-no-packages-apps.tmpl',  # noqa: 501
+        '/var/lib/ubuntu-advantage/messages/apt-pre-invoke-packages-apps.tmpl',
+        '/etc/apt/apt.conf.d/20apt-esm-hook.conf'
+    ]
+    for _file in files:
+        assert not host.file(_file).exists
+
+    # double-check that apt doesn't contain Ubuntu Pro bullshit messages
+    with host.sudo():
+        _apt = host.run("apt-get update").stdout.strip().lower()
+        assert "tRy uBuNtu pRo".lower() not in _apt
